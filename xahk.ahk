@@ -25,6 +25,7 @@ ProgState := 0
 ; 2: FishingMode	- Enter Fishing Mode
 ; 3: ConcreteMode	- Enter Concrete Mode
 ; 4: MobGrindMode	- Enter Mob Grinder Mode
+; 5: NetherwartMode	- Enter Netherwart Mode
 
 ;===================================================================================================
 ;Shortcuts
@@ -34,6 +35,7 @@ Hotkey  !^e,	JumpFly			; Pressing ctrl + alt + e will dubble hit space and fire 
 								; main hand
 Hotkey  !^c,	Concrete		; Pressing ctrl + alt + c will start concrete farming
 Hotkey  !^m,	MobGrind		; Pressing ctrl + alt + m will start mob grinding
+Hotkey  !^n,	Netherwart		; Pressing ctrl + alt + m will start netherwart farming
 Hotkey	!^s,	Stop			; Pressing ctrl + alt + s will stop it
 Hotkey  !^w,    SelectWindow 	;Allows user to select window to control by hovering mouse over it and
 								;Pressing ctrl + alt + w
@@ -48,6 +50,7 @@ Menu, OptionsMenu, Add, Fishing, MenuFishing
 Menu, OptionsMenu, Add, AFK Mob, MenuAFK
 Menu, OptionsMenu, Add, Concrete, MenuConcrete
 Menu, OptionsMenu, Add, JumpFlying, MenuJumpFly
+Menu, OptionsMenu, Add, Netherwart, MenuNetherwart
 Menu, ClickerMenu, Add, File, :FileMenu
 Menu, ClickerMenu, Add, Help, :HelpMenu
 Menu, ClickerMenu, Add, Options, :OptionsMenu
@@ -197,6 +200,26 @@ MenuJumpFly:
 	Return
 }
 ;===================================================================================================
+; Switch to Nether wart and update window
+MenuNetherwart:
+{
+	; Stop and current active AHK process
+	BreakLoop := 1
+
+	Gui, Destroy
+	Gui, Show, w500 h500, Temp
+	Gui, Menu, ClickerMenu
+	Gui, Add, Text,, Target Window Title : %targettitle%
+	Gui, Add, Text,, Windows HWIND is : %id%
+	Gui, Add, Text,, CURRENT AVALIBLE OPTIONS: 
+	Gui, Add, Text,, o- Pressing ctrl + alt + n will start nether wart farming
+	Gui, Add, Text,, o- Pressing ctrl + alt + s will stop any AutoKey funtion above
+	Gui, Show,, Minecraft X-AHK V0.4
+
+	ProgState := 5
+	Return
+}
+;===================================================================================================
 ; Called when Ctrl+Alt+E is pressed.
 ; NOTE: Target window MUST be in focus for this to work
 JumpFly:
@@ -309,6 +332,33 @@ MobGrind:
 	;Force mouse keys UP at exit
 	ControlClick, , ahk_id %id%, ,Right, , NAU
 	ControlClick, , ahk_id %id%, ,Left, ,NAU
+	Return
+}
+;==================================================================================================
+; Called when Ctrl+Alt+N is pressed
+Netherwart:
+{
+	if (ProgState != 5)
+		Return
+
+	BreakLoop := 0
+		Loop
+		{
+			if (BreakLoop = 1)
+			{
+				BreakLoop := 0
+				break
+			}
+
+			Sleep 25
+			ControlClick, , ahk_id %id%, ,Left, , NAD
+			Sleep 25
+			ControlClick, , ahk_id %id%, ,Left, , NAU
+			sleep 25
+			ControlClick, , ahk_id %id%, ,Right, , NAD
+			sleep 25
+			ControlClick, , ahk_id %id%, ,Right, , NAU
+		}
 	Return
 }
 ;==================================================================================================
